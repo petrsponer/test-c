@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
-
-#define PASSWORD "ABCD1234!" // hardcoding any credential used to be considered a bad practice unless there is a very good reason
+// hardcoded credential used to be considered a bad practice unless there is a very good reason
+#define PASSWORD "ABCD1234!"
 
 /*You need not worry about other include statements if at all any are missing */
 
 void func1() {
     char *data;
-    char *dataBuffer = (char *) ALLOCA(100 * sizeof(char)); //generally using alloca is considered a
+//generally using alloca() (if the ALLOCA = alloca() )  is considered potentially dangerous while using stack may cause shortage of the memory.
+    char *dataBuffer = (char *) ALLOCA(100 * sizeof(char));
     memset(dataBuffer, 'A', 100 - 1);
     dataBuffer[100 - 1] = '\0';
     data = dataBuffer - 8;
@@ -18,7 +19,8 @@ void func1() {
         source[100 - 1] = '\0';
         strcpy(data, source);
         if (data != NULL) {
-            printf("%s\n", data); // leads to “Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)”
+// may lead to unexpected crash or other unwanted behavior. “Process finished with exit code 139 (interrupted by signal 11: SIGSEGV)”
+            printf("%s\n", data);
         }
     }
 }
@@ -31,7 +33,7 @@ void func2() {
     if (data != NULL) {
         printf("%s\n", data);
     }
-// missing free memory may lead to leak of memory
+// missing free memory may lead to leak of memory, consequently may eventually consume all RAM resources, particularly dangerous in kernel levels
 }
 
 void func3() {
@@ -63,6 +65,7 @@ static void func4() {
     data = (char *) calloc(20, sizeof(char));
     if (data != NULL) {
         strcpy(data, "Initialize");
+// always true condition
         if (data != NULL) {
             printf("%s\n", data);
         }
@@ -75,7 +78,8 @@ void func5() {
     do {
         printf("%d\n", i);
         i = (i + 1) % 256;
-    } while (i >= 0); // this will run indefinitely
+    } while (i >= 0);
+
 }
 
 void func6() {
@@ -96,7 +100,8 @@ void func7() {
     char *data;
     data = "Fortify";
     data = NULL;
-    printf("%s\n", data); // Null pointer dereference
+    // Null pointer dereference = unexpected program crash or other unwanted behavoir.
+    printf("%s\n", data);
 }
 
 int main(int argc, char *argv[]) {
@@ -123,3 +128,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
